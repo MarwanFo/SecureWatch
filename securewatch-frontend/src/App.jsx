@@ -12,6 +12,7 @@ import SettingsPage from './pages/SettingsPage';
 function AppContent() {
   const { token, error, clearError } = useAuth();
   const [activeMenu, setActiveMenu] = useState('Dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const renderPage = () => {
     switch (activeMenu) {
@@ -56,10 +57,15 @@ function AppContent() {
       {!token ? (
         <AuthPage />
       ) : (
-        <div className="flex h-screen w-full overflow-hidden">
-          <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <Header />
+        <div className="flex h-screen w-full overflow-hidden relative">
+          <Sidebar 
+            activeMenu={activeMenu} 
+            setActiveMenu={setActiveMenu} 
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+          <div className="flex-1 flex flex-col overflow-hidden w-full">
+            <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
             {renderPage()}
           </div>
         </div>
