@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext(null);
 const API_BASE_URL = 'http://localhost:8080/api/v1/auth';
@@ -27,21 +27,51 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (data.mfaRequired) {
-        setError({ message: 'Multi-Factor Authentication (MFA) is required.', type: 'warning' });
         setIsLoading(false);
-        return false;
+        return { mfaRequired: true, userId: data.userId };
       }
 
       localStorage.setItem('sw_access_token', data.accessToken);
       localStorage.setItem('sw_refresh_token', data.refreshToken);
-      const userData = { nom: data.nom, role: data.role, email, subdomain };
+      const userData = { nom: data.nom, role: data.role, email, subdomain, userId: data.userId };
+      localStorage.setItem('sw_user', JSON.stringify(userData));
+
+      setToken(data.accessToken);
+      setUser(userData);
+      return { success: true };
+    } catch (err) {
+      setError({ message: err.message || 'Server connection failed', type: 'error' });
+      return { success: false };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyMfaLogin = async (userId, code, email, subdomain) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_BASE_URL}/mfa/verify-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, code })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Invalid 2FA code');
+      }
+
+      localStorage.setItem('sw_access_token', data.accessToken);
+      localStorage.setItem('sw_refresh_token', data.refreshToken);
+      const userData = { nom: data.nom, role: data.role, email, subdomain, userId: data.userId };
       localStorage.setItem('sw_user', JSON.stringify(userData));
 
       setToken(data.accessToken);
       setUser(userData);
       return true;
     } catch (err) {
-      setError({ message: err.message || 'Server connection failed', type: 'error' });
+      setError({ message: err.message || 'Verification failed', type: 'error' });
       return false;
     } finally {
       setIsLoading(false);
@@ -94,7 +124,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, isLoading, error, login, register, logout, clearError, loadMockSession }}>
+    <AuthContext.Provider value={{ token, user, isLoading, error, login, verifyMfaLogin, register, logout, clearError, loadMockSession }}>
       {children}
     </AuthContext.Provider>
   );

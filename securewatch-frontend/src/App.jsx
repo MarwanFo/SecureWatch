@@ -7,6 +7,7 @@ import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
 import AlertsPage from './pages/AlertsPage';
 import LogsPage from './pages/LogsPage';
+import SettingsPage from './pages/SettingsPage';
 
 function AppContent() {
   const { token, error, clearError } = useAuth();
@@ -35,14 +36,9 @@ function AppContent() {
           </section>
         );
       case 'Settings':
-        return (
-          <section className="flex-1 overflow-y-auto p-8">
-            <h1 className="text-xl font-semibold text-slate-900 tracking-tight">Settings</h1>
-            <p className="text-xs text-slate-500 mt-1">Tenant, user and MFA configuration.</p>
-          </section>
-        );
+        return <SettingsPage />;
       default:
-        return <DashboardPage activeMenu={activeMenu} />;
+        return <DashboardPage activeMenu={activeMenu} onNavigate={setActiveMenu} />;
     }
   };
 

@@ -13,4 +13,5 @@ public class LoginResponse {
     private boolean mfaRequired;
     private String role;
     private String nom;
+    private String userId;
 }

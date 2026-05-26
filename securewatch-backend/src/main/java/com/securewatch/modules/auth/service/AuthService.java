@@ -63,6 +63,7 @@ public class AuthService {
                     .mfaRequired(true)
                     .nom(user.getNom())
                     .role(user.getRole().name())
+                    .userId(user.getId().toString())
                     .build();
         }
 
@@ -75,6 +76,7 @@ public class AuthService {
                 .mfaRequired(false)
                 .nom(user.getNom())
                 .role(user.getRole().name())
+                .userId(user.getId().toString())
                 .build();
     }
 
