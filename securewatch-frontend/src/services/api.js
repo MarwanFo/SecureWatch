@@ -9,7 +9,7 @@ const getAuthHeaders = () => {
 };
 
 const handleResponse = async (response) => {
-  if (response.status === 401) {
+  if (response.status === 401 || response.status === 403) {
     localStorage.removeItem('sw_access_token');
     localStorage.removeItem('sw_refresh_token');
     localStorage.removeItem('sw_user');
