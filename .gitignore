@@ -1,0 +1,52 @@
+# ==========================================
+# SecureWatch — Git Ignore Rules
+# ==========================================
+
+# Ignore all markdown files
+*.md
+# Except README.md
+!README.md
+
+# Ignore all image files (mockups, screenshots, designs)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.pdf
+
+# Core project folders
+node_modules/
+target/
+.gradle/
+build/
+bin/
+
+# Local configuration and credentials
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and OS specific
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Logs and runtime databases
+*.log
+.pnpm-store/
+.yarn/
+.next/
+dist/
+out/
+.docusaurus/
+.turbo/
